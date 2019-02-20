@@ -1,5 +1,5 @@
-# Probely Security Scanner Jenkins Plugin
-This Jenkins plugin uses [Probely](https://probely.com) to scan your web application for 
+# Probely Security Scanner Plugin
+This plugin uses [Probely](https://probely.com) to scan your web application for 
 security vulnerabilities. It enables security testing in your CI/CD pipeline.
 
 Probely is a Web Vulnerability Scanning suite for Agile Teams. It provides 
