@@ -63,7 +63,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
         ScanRequest scanRequest = new ScanRequest(authToken, Settings.API_TARGET_URL, targetId, httpClient);
         Scan scan = scanRequest.start();
         httpClient.close();
-        log("Started scan on target: " + targetId + ". Status: " + scan.getStatus(), listener);
+        log("Started scan on target: " + targetId + ". Status: " + scan.status, listener);
     }
 
     private void log(String msg, TaskListener listener) {

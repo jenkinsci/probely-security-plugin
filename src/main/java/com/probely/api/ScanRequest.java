@@ -31,7 +31,7 @@ public class ScanRequest {
     }
 
     public Scan refresh() throws IOException {
-        String url = String.format("%s/%s/scans/%s/", baseUrl, target, scan.getId());
+        String url = String.format("%s/%s/scans/%s/", baseUrl, target, scan.id);
         HttpGet request = new HttpGet(url);
         ApiUtils.addRequiredHeaders(authToken, request);
         String response = ApiUtils.get(httpClient, request);
