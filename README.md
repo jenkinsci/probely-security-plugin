@@ -112,7 +112,7 @@ The following `Jenkinsfile` may be used as an example to add Probely to your pip
 It should be placed in the root of your source code repository.
 This pipeline consists of an hypothetical Java project, built with Gradle, with two stages: 
 one running unit tests and the other launching a scan with Probely. 
-Note that the `targetId` and `credentialsId` value refer to the credentials obtained and configured previosuly.
+Note that the `targetId` and `credentialsId` value refer to the credentials obtained and configured previously.
 
 ```
 pipeline {
