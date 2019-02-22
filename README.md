@@ -56,10 +56,7 @@ We will describe how to use the plugin in both project types.
 ## Configuring credentials
 
 1. Click on **Credentials**
-
-![Credentials](/images/credentials_0.png)
-
-2. Click on the down arrow near **(global)** to enable the dropdown menu and choose 
+1. Click on the down arrow near **(global)** to enable the dropdown menu and choose 
 **Add credentials**
 
 ![Add Credentials](/images/credentials_1.png)
