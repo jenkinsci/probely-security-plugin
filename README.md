@@ -29,10 +29,10 @@ Installing and setting up the plugin will take you less than 5 minutes.
 
 ![Available](/images/install_plugin_3.png)
 
-5. On the **Filter** search box, enter **probely**
-6. Select the **Probely Security Scanner** plugin
-7. Click on **Download now and install after restart**
-8. After Jenkins restarts, the plugin will be installed. Continue reading to setup the required Probely API key.
+4. On the **Filter** search box, enter **probely**
+5. Select the **Probely Security Scanner** plugin
+6. Click on **Download now and install after restart**
+7. After Jenkins restarts, the plugin will be installed. Continue reading to setup the required Probely API key.
 
 # Generating an API key
 Before using the plugin, you first need to create an API key for Jenkins to be able to start a scan with Probely.
