@@ -84,7 +84,7 @@ Freestyle Jenkins projects have been traditionally used to create pipeline-like 
 
 We assume that all required steps have been properly configured, such as checking out from your SCM, testing, among others.
 
-1. Add the `Target Id`. As defined in the **Generating an API key** step.
+1. Add the `Target id`, as defined in the **Generating an API key** step.
 1. Select the right credentials, which were configured in **Configuring credentials**. If the connection to Probely's API is working correctly, and the credentials are valid, you should see the message "Credentials verified sucessfully".
 1. When all steps are properly configured, click on **Save**
 
