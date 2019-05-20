@@ -1,4 +1,6 @@
 <?jelly escape-by-default='true'?>
 <div>
-  Run the <a href="https://probely.com">Probely</a> security scanner.
+  Scan your web application for security vulnerabilities with
+  <a href="https://probely.com">Probely</a>. It enables security testing in
+  your CI/CD pipeline.
 </div>

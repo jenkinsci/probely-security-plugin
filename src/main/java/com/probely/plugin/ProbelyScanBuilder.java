@@ -89,7 +89,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
                                                      @QueryParameter final String credentialsId) {
             StandardListBoxModel result = new StandardListBoxModel();
             if (item == null) {
-                if (!Jenkins.get().hasPermission(Jenkins.ADMINISTER)) {
+                if (!Jenkins.getInstance().hasPermission(Jenkins.ADMINISTER)) {
                     return result;
                 }
             } else {
@@ -106,7 +106,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
         public FormValidation doCheckCredentialsId(@AncestorInPath Item item,
                                                    @QueryParameter final String credentialsId) {
             if (item == null) {
-                if (!Jenkins.get().hasPermission(Jenkins.ADMINISTER)) {
+                if (!Jenkins.getInstance().hasPermission(Jenkins.ADMINISTER)) {
                     return FormValidation.ok();
                 }
             } else {

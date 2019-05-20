@@ -1,6 +1,6 @@
 package com.probely.api;
 
-public enum VulnerabilityLevel {
+public enum FindingSeverity {
     LOW,
     MEDIUM,
     HIGH
