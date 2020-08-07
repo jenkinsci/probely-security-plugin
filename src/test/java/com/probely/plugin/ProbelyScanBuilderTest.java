@@ -1,6 +1,6 @@
 package com.probely.plugin;
 
-import com.probely.api.ScanRequest;
+import com.probely.api.ScanController;
 import com.probely.util.ApiUtils;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
@@ -32,8 +32,8 @@ public class ProbelyScanBuilderTest {
     public void testInvalidCredentials() throws Exception {
         CloseableHttpClient client = ApiUtils.buildHttpClient(5000);
         try {
-            ScanRequest sr = new ScanRequest(authToken, Settings.API_PROFILE_URL, targetId, client);
-            sr.start();
+            ScanController sc = new ScanController(authToken, Settings.API_PROFILE_URL, targetId, client);
+            sc.start();
         } catch (ClientProtocolException cex) {
             // Expected
         } finally {

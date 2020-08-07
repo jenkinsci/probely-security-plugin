@@ -6,12 +6,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.io.IOException;
 
-public class UserRequest {
+public class UserController {
     private final String authToken;
     private final String baseUrl;
     private final CloseableHttpClient httpClient;
 
-    public UserRequest(String authToken, String url, CloseableHttpClient httpClient) {
+    public UserController(String authToken, String url, CloseableHttpClient httpClient) {
         this.authToken = authToken;
         this.baseUrl = url;
         this.httpClient = httpClient;

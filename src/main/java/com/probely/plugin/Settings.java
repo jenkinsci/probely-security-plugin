@@ -9,7 +9,7 @@ public class Settings {
 
     public static final String MSG_CREDS_VALID = "Credentials verified successfully";
 
-    public static final String ERR_CREDS_INVALID = "Credentials are invalid";
+    public static final String ERR_CREDS_INVALID = "Invalid credentials";
     public static final String ERR_CREDS_NOT_FOUND = "Credentials not found";
     public static final String ERR_API_CONN = "Could not connect to the API";
 }

@@ -79,7 +79,7 @@ public class ApiUtils {
     public static void closeHttpClient(CloseableHttpClient httpClient) {
         try {
             httpClient.close();
-        } catch (IOException ioe) {
+        } catch (IOException ignored) {
             // Ignore
         }
     }

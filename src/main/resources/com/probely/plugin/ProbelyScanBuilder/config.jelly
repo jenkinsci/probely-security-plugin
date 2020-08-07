@@ -6,4 +6,12 @@
     <f:entry title="${%Credentials}" field="credentialsId">
         <c:select/>
     </f:entry>
+     <f:entry field="stopIfVulnerable">
+         <f:checkbox field="stopIfVulnerable"/>
+         ${%Stop the scan if the target is vulnerable}
+     </f:entry>
+    <f:entry field="waitforscan">
+        <f:checkbox field="waitforscan"/>
+        ${%wait until scan finishes}
+    </f:entry>
 </j:jelly>

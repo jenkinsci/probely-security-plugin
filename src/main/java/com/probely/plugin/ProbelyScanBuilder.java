@@ -4,6 +4,7 @@ import com.cloudbees.plugins.credentials.Credentials;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.probely.api.*;
+import com.probely.exceptions.ProbelyScanException;
 import com.probely.util.ApiUtils;
 import com.probely.util.CredentialsUtils;
 import hudson.Extension;
@@ -26,7 +27,9 @@ import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.plaincredentials.StringCredentials;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -34,13 +37,18 @@ import java.io.IOException;
 
 public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
 
-    private String targetId;
-    private String credentialsId;
+    private final String targetId;
+    private final String credentialsId;
+    private boolean waitForScan;
+    private boolean stopIfVulnerable;
 
     @DataBoundConstructor
+    // Constructor parameters are bound to field names in "config.jelly"
     public ProbelyScanBuilder(String targetId, String credentialsId) {
         this.targetId = targetId;
         this.credentialsId = credentialsId;
+        this.waitForScan = true;
+        this.stopIfVulnerable = true;
     }
 
     public String getTargetId() {
@@ -51,6 +59,24 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
         return credentialsId;
     }
 
+    public boolean getWaitForScan() {
+        return waitForScan;
+    }
+
+    @DataBoundSetter
+    public void setWaitForScan(boolean waitForScan) {
+        this.waitForScan = waitForScan;
+    }
+
+    public boolean getStopIfVulnerable() {
+        return stopIfVulnerable;
+    }
+
+    @DataBoundSetter
+    public void setStopIfVulnerable(boolean stopIfVulnerable) {
+        this.stopIfVulnerable = stopIfVulnerable;
+    }
+
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener)
             throws IOException {
@@ -59,15 +85,46 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
         if (authToken == null) {
             throw new AuthenticationException(Settings.ERR_CREDS_NOT_FOUND);
         }
+        log("Requesting scan for target: " + targetId, listener);
         CloseableHttpClient httpClient = ApiUtils.buildHttpClient();
-        ScanRequest scanRequest = new ScanRequest(authToken, Settings.API_TARGET_URL, targetId, httpClient);
-        Scan scan = scanRequest.start();
-        httpClient.close();
-        log("Started scan on target: " + targetId + ". Status: " + scan.status, listener);
+        ScanController sc = new ScanController(authToken, Settings.API_TARGET_URL, targetId, httpClient);
+        Scan scan = sc.start();
+        log("Requested scan: " + scan, listener);
+        try {
+            if (waitForScan) {
+                watchScan(sc, listener);
+            }
+        } finally {
+            sc.close();
+        }
+    }
+
+    private boolean watchScanStep(ScanController controller, TaskListener listener, ScanRules rules) throws ProbelyScanException {
+        Scan scan = controller.waitForChanges(60);
+        // Have vulnerabilities been found in the meanwhile?
+        if (rules.isVulnerable(scan)) {
+            if (stopIfVulnerable) {
+                controller.stop();
+            }
+            String msg = "Target is vulnerable: " + scan;
+            log(msg, listener);
+            throw new ProbelyScanException(msg);
+        }
+        return scan.isRunning();
+    }
+
+    private void watchScan(ScanController controller, TaskListener listener) throws ProbelyScanException {
+        ScanRules rules = new ScanRules(FindingSeverity.LOW);
+        Scan scan = controller.getScan();
+        while (watchScanStep(controller, listener, rules)) {
+            scan = controller.getScan();
+            log("Scan progress details: " + scan, listener);
+        }
+        log("Scan has finished. Details: " + scan, listener);
     }
 
     private void log(String msg, TaskListener listener) {
-        listener.getLogger().println(msg);
+        listener.getLogger().println(Settings.PLUGIN_DISPLAY_NAME + ": " + msg);
     }
 
     @Symbol("probelyScan")
@@ -85,6 +142,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
             return Settings.PLUGIN_DISPLAY_NAME;
         }
 
+        @SuppressWarnings("unused")
         public ListBoxModel doFillCredentialsIdItems(@AncestorInPath Item item,
                                                      @QueryParameter final String credentialsId) {
             StandardListBoxModel result = new StandardListBoxModel();
@@ -103,6 +161,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
                     .includeAs(ACL.SYSTEM, item, StringCredentials.class);
         }
 
+        @POST
         public FormValidation doCheckCredentialsId(@AncestorInPath Item item,
                                                    @QueryParameter final String credentialsId) {
             if (item == null) {
@@ -125,8 +184,8 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
             CloseableHttpClient httpClient = ApiUtils.buildHttpClient(timeout);
             String error = null;
             try {
-                UserRequest request = new UserRequest(authToken, Settings.API_PROFILE_URL, httpClient);
-                if (request.get() == null) {
+                UserController uc = new UserController(authToken, Settings.API_PROFILE_URL, httpClient);
+                if (uc.get() == null) {
                     error = Settings.ERR_CREDS_INVALID;
                 }
             } catch (AuthenticationException aex) {
