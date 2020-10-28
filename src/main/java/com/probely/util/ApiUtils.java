@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class ApiUtils {
+    private static final String USER_AGENT =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; +https://probely.com/sos) " +
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 ProbelyJK/1.0.0";
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final int API_TIMEOUT_MS = 30000;
 
@@ -25,9 +28,11 @@ public class ApiUtils {
                 .setConnectTimeout(timeout)
                 .setSocketTimeout(timeout)
                 .build();
-        HttpClientBuilder builder = HttpClientBuilder.create();
-        builder.setDefaultRequestConfig(config);
-        return builder.build();
+
+        return HttpClientBuilder.create()
+                .setDefaultRequestConfig(config)
+                .setUserAgent(USER_AGENT)
+                .build();
     }
 
     public static CloseableHttpClient buildHttpClient() {

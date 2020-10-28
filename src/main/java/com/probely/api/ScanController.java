@@ -33,16 +33,14 @@ public class ScanController {
     }
 
     public Scan refresh() throws IOException {
-        if (this.scan == null) {
+        if (scan == null) {
             throw new RuntimeException("Scan is not available.");
         }
         String url = String.format("%s/%s/scans/%s/", baseUrl, target, scan.id);
         HttpGet request = new HttpGet(url);
         ApiUtils.addRequiredHeaders(authToken, request);
-        String response = null;
-        response = ApiUtils.get(httpClient, request);
-        scan = ScanDeserializer.deserialize(response);
-        return scan;
+        String response = ApiUtils.get(httpClient, request);
+        return ScanDeserializer.deserialize(response);
     }
 
     public Scan stop() {
@@ -58,7 +56,7 @@ public class ScanController {
         }
 
         long start = Instant.now().getEpochSecond();
-        while (Instant.now().getEpochSecond() - start > timeout) {
+        while (Instant.now().getEpochSecond() - start < timeout) {
             Scan current = null;
             try {
                 current = refresh();

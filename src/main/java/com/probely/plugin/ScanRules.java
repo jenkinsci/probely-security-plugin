@@ -11,14 +11,15 @@ public class ScanRules {
     }
 
     public boolean isVulnerable(Scan scan) {
-        if (severityThreshold == FindingSeverity.HIGH) {
-            return scan.highs > 0;
-        } else if (severityThreshold == FindingSeverity.MEDIUM) {
-            return scan.mediums + scan.highs > 0;
-        } else if (severityThreshold == FindingSeverity.LOW) {
-            return scan.lows + scan.mediums + scan.highs > 0;
-        } else {
-            return false;
+        int count = 0;
+        switch (severityThreshold) {
+            case LOW:
+                count += scan.lows;
+            case MEDIUM:
+                count += scan.mediums;
+            case HIGH:
+                count += scan.highs;
         }
+        return count > 0;
     }
 }

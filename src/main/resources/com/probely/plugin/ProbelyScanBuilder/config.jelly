@@ -1,17 +1,74 @@
-<?jelly escape-by-default='true'?>
+<!-- <?jelly escape-by-default='true'?> -->
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
-    <f:entry title="${%Target id}" field="targetId">
+    <j:set var="editorId" value="${descriptor.createEditorId()}"/>
+    <f:entry title="${%Target ID}" field="targetId">
         <f:textbox default="${it.getTargetId()}"/>
     </f:entry>
     <f:entry title="${%Credentials}" field="credentialsId">
-        <c:select/>
+        <c:select checkMethod="post"/>
     </f:entry>
-     <f:entry field="stopIfVulnerable">
-         <f:checkbox field="stopIfVulnerable"/>
-         ${%Stop the scan if the target is vulnerable}
+    <f:entry field="waitForScan" id="waitForScan-${editorId}">
+        <f:checkbox field="waitForScan" default="false"/>
+        ${%Wait for the scan to finish}
+    </f:entry>
+    <f:entry field="failThreshold">
+        ${%Fail the build if vulnerabilities are found}
+        <f:select id="failThreshold-${editorId}" default="Medium"/>
      </f:entry>
-    <f:entry field="waitforscan">
-        <f:checkbox field="waitforscan"/>
-        ${%wait until scan finishes}
-    </f:entry>
+     <f:entry field="stopIfFailed" id="stopIfFailed-${editorId}">
+         <f:checkbox field="stopIfFailed" default="true"/>
+         ${%Stop scanning if the build fails}
+     </f:entry>
+    <script>
+        /*<![CDATA[*/
+        (function () {
+            let count = 0;
+            const limit = 10;
+            function getParentElmByTag(node, tag) {
+                if (!node) {
+                    return null;
+                }
+                let nodeTag = node.nodeName.toLowerCase();
+                if (nodeTag === tag) {
+                    return node;
+                }
+                while(nodeTag !== tag) {
+                    node = node.parentNode;
+                    nodeTag = node.nodeName.toLowerCase();
+                }
+                return node;
+            }
+            function runCode() {
+                const waitForScan = document.querySelector('div[descriptorid="com.probely.plugin.ProbelyScanBuilder"] input[name="_.waitForScan"]');
+                const failThreshold = document.querySelector('div[descriptorid="com.probely.plugin.ProbelyScanBuilder"] select[name="_.failThreshold"]');
+                const stopIfFailed = document.querySelector('div[descriptorid="com.probely.plugin.ProbelyScanBuilder"] input[name="_.stopIfFailed"]');
+                const failThresholdContainer = getParentElmByTag(failThreshold, 'tr');
+                const stopIfFailedContainer = getParentElmByTag(stopIfFailed, 'tr');
+                function onChangeHandler() {
+                    if (!waitForScan.checked) {
+                        stopIfFailedContainer.style.visibility = 'hidden';
+                        failThresholdContainer.style.visibility = 'hidden';
+                    } else {
+                        stopIfFailedContainer.style.visibility = 'visible';
+                        failThresholdContainer.style.visibility = 'visible';
+                    }
+                }
+                if (waitForScan !== null && failThresholdContainer !== null && stopIfFailedContainer !== null) {
+                    onChangeHandler();
+                    waitForScan.addEventListener('change', () => {
+                        onChangeHandler();
+                    });
+                    return;
+                }
+                if (count < limit) {
+                    setTimeout(function() {
+                        runCode();
+                    }, 500);
+                }
+                count++;
+            }
+            runCode();
+        })();
+       /*]]>*/
+     </script>
 </j:jelly>

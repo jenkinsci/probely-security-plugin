@@ -19,7 +19,7 @@ public class Scan {
 
     public String toString() {
         return String.format(
-                "id: %s | status: %s | vulnerability count: high: %d, medium: %d, low: %d",
+                "id: %s | status: %s | vulnerabilities: high: %d, medium: %d, low: %d",
                 id, status, highs, mediums, lows);
     }
 

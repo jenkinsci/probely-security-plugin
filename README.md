@@ -146,8 +146,9 @@ A minimal example on how to build and run the plugin on Ubuntu Linux follows. It
 
 ```bash
 
-$ sudo apt install openjdk-8-jdk maven
-$ git clone https://github.com/jenkinsci/probely-security-plugin.git
-$ cd probely-security-plugin
-$ mvn hpi:run
+sudo apt install openjdk-8-jdk maven
+git clone https://github.com/jenkinsci/probely-security-plugin.git
+cd probely-security-plugin
+mvn dependency:resolve-plugins
+mvn hpi:run
 ```

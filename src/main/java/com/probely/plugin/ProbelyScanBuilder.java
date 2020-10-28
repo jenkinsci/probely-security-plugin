@@ -29,6 +29,7 @@ import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.bind.JavaScriptMethod;
 import org.kohsuke.stapler.verb.POST;
 
 import javax.annotation.Nonnull;
@@ -40,7 +41,8 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
     private final String targetId;
     private final String credentialsId;
     private boolean waitForScan;
-    private boolean stopIfVulnerable;
+    private boolean stopIfFailed;
+    private FindingSeverity failThreshold;
 
     @DataBoundConstructor
     // Constructor parameters are bound to field names in "config.jelly"
@@ -48,7 +50,8 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
         this.targetId = targetId;
         this.credentialsId = credentialsId;
         this.waitForScan = true;
-        this.stopIfVulnerable = true;
+        this.stopIfFailed = true;
+        this.failThreshold = FindingSeverity.MEDIUM;
     }
 
     public String getTargetId() {
@@ -68,13 +71,22 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
         this.waitForScan = waitForScan;
     }
 
-    public boolean getStopIfVulnerable() {
-        return stopIfVulnerable;
+    public boolean getStopIfFailed() {
+        return stopIfFailed;
     }
 
     @DataBoundSetter
-    public void setStopIfVulnerable(boolean stopIfVulnerable) {
-        this.stopIfVulnerable = stopIfVulnerable;
+    public void setStopIfFailed(boolean stopIfFailed) {
+        this.stopIfFailed = stopIfFailed;
+    }
+
+    public String getFailThreshold() {
+        return failThreshold.toString();
+    }
+
+    @DataBoundSetter
+    public void setFailThreshold(String failThreshold) {
+        this.failThreshold = FindingSeverity.fromString(failThreshold);
     }
 
     @Override
@@ -90,6 +102,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
         ScanController sc = new ScanController(authToken, Settings.API_TARGET_URL, targetId, httpClient);
         Scan scan = sc.start();
         log("Requested scan: " + scan, listener);
+
         try {
             if (waitForScan) {
                 watchScan(sc, listener);
@@ -103,7 +116,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
         Scan scan = controller.waitForChanges(60);
         // Have vulnerabilities been found in the meanwhile?
         if (rules.isVulnerable(scan)) {
-            if (stopIfVulnerable) {
+            if (stopIfFailed) {
                 controller.stop();
             }
             String msg = "Target is vulnerable: " + scan;
@@ -114,12 +127,13 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
     }
 
     private void watchScan(ScanController controller, TaskListener listener) throws ProbelyScanException {
-        ScanRules rules = new ScanRules(FindingSeverity.LOW);
-        Scan scan = controller.getScan();
+        ScanRules rules = new ScanRules(failThreshold);
+        Scan scan;
         while (watchScanStep(controller, listener, rules)) {
             scan = controller.getScan();
             log("Scan progress details: " + scan, listener);
         }
+        scan = controller.getScan();
         log("Scan has finished. Details: " + scan, listener);
     }
 
@@ -130,6 +144,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
     @Symbol("probelyScan")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
+        private long lastEditorId = 0;
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
@@ -140,6 +155,11 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
         @Nonnull
         public String getDisplayName() {
             return Settings.PLUGIN_DISPLAY_NAME;
+        }
+
+        @JavaScriptMethod
+        public synchronized String createEditorId() {
+            return String.valueOf(lastEditorId++);
         }
 
         @SuppressWarnings("unused")
@@ -200,6 +220,19 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
             } else {
                 return FormValidation.error(error);
             }
+        }
+
+        @SuppressWarnings("unused")
+        public ListBoxModel doFillFailThresholdItems() {
+            ListBoxModel items = new ListBoxModel();
+            for (FindingSeverity fs : FindingSeverity.values()) {
+                String description = fs.toString();
+                if (fs == FindingSeverity.LOW || fs == FindingSeverity.MEDIUM) {
+                    description += " or above";
+                }
+                items.add(description, fs.toString());
+            }
+            return items;
         }
     }
 }
