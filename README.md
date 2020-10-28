@@ -60,7 +60,7 @@ After the API key is created, please take note of the `Target ID` and API key va
 1. Write a name for the API Key. Since we want this API Key for Jenkins, we name it **Jenkins**
 1. Click on **Generate New Key**
 
-![Creating an API key](/images/enterprise_new_api_key.png)
+![Creating an API key](/images/new_enterprise_api_key.png)
 
 After the API key is created, please take note of the `Target ID` and API key values. They will be required to configure the Plugin credentials later on.
 
