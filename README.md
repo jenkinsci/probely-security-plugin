@@ -35,6 +35,8 @@ Installing and setting up the plugin will take you less than 5 minutes.
 7. After Jenkins restarts, the plugin will be installed. Continue reading to setup the required Probely API key.
 
 # Generating an API key
+
+## For Probely Standard Version 
 Before using the plugin, you first need to create an API key for Jenkins to be able to start a scan with Probely.
 
 1. Go to https://app.probely.com and log in
@@ -46,7 +48,20 @@ Before using the plugin, you first need to create an API key for Jenkins to be a
 
 ![Creating an API key](/images/new_api_key.png)
 
-After the API key is created, please take note of the `Target id` and API key values. They will be required to configure the Plugin credentials later on.
+After the API key is created, please take note of the `Target ID` and API key values. They will be required to configure the Plugin credentials later on.
+
+## For Probely Enterprise Version
+
+1. Go to https://plus.probely.app/ and log in
+1. Go to the **Target** tab and click on the target
+1. Click on the **Settings** button
+1. Click on the **Integrations** tab
+1. Write a name for the API Key. Since we want this API Key for Jenkins, we name it **Jenkins**
+1. Click on **Generate New Key**
+
+![Creating an API key](/images/enterprise_new_api_key.png)
+
+After the API key is created, please take note of the `Target ID` and API key values. They will be required to configure the Plugin credentials later on.
 
 # Configuring the plugin
 
