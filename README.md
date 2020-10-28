@@ -36,8 +36,9 @@ Installing and setting up the plugin will take you less than 5 minutes.
 
 # Generating an API key
 
-## For Probely Standard Version 
 Before using the plugin, you first need to create an API key for Jenkins to be able to start a scan with Probely.
+
+## For Probely Standard Version 
 
 1. Go to https://app.probely.com and log in
 1. Select a target from the drop-down list
@@ -107,7 +108,7 @@ We assume that all required steps have been properly configured, such as checkin
 
 ## Using the plugin in a Pipeline project
 
-Pipeline projects are the new way to create build/test/deploy (among others) pipelines in Jenkins. Pipelines are defined in a `Jenkinfile`, which can be configured in an older imperative syntax, or in a more modern declarative syntax. We describe how to use Probely using a declarative `Jenkinsfile` to build a simple build/test/scan Pipeline.
+Pipeline projects are the new way to create build/test/deploy (and more) pipelines in Jenkins. Pipelines are defined in a `Jenkinfile`, which can be configured in an older imperative syntax, or in a more modern declarative syntax. We describe how to use Probely using a declarative `Jenkinsfile` to build a simple build/test/scan Pipeline.
 
 1. Click on **New Item**
 
@@ -124,7 +125,7 @@ The following `Jenkinsfile` may be used as an example to add Probely to your pip
 It should be placed in the root of your source code repository.
 This pipeline consists of an hypothetical Java project, built with Gradle, with two stages: 
 one running unit tests and the other launching a scan with Probely. 
-Note that the `targetId` and `credentialsId` value refer to the credentials obtained and configured previously.
+Note that the `targetId` and `credentialsId` value refer to the credentials configured previously.
 
 ```
 pipeline {
