@@ -143,7 +143,7 @@ pipeline {
         }
         stage('Scan with Probely') {
             steps {
-                probelyScan targetId: '9nl6yy0TWWKv', credentialsId: 'probely-test-site', 
+                probelyScan targetId: '9nl6yy0TWWKv', credentialsId: 'probely-test-site', waitForScan: true, stopIfFailed: true, failThreshold: 'medium'
             }
          }
     }
