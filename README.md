@@ -38,7 +38,7 @@ Installing and setting up the plugin will take you less than 5 minutes.
 
 Before using the plugin, you first need to create an API key for Jenkins to be able to start a scan with Probely.
 
-## On Probely Standard Version 
+## On Probely Standard Version
 
 1. Go to https://app.probely.com and log in
 1. Select a target from the drop-down list
