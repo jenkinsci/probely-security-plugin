@@ -102,7 +102,7 @@ We assume that all required steps have been properly configured, such as checkin
 
 1. Add the `Target ID`, as defined in the **Generating an API key** step.
 1. Select the right credentials, which were configured in **Configuring credentials**. If the connection to Probely's API is working correctly, and the credentials are valid, you should see the message "Credentials verified successfully".
-1. Set additional scan options, if needed: wait for the scan to finish before moving on to the next step, fail the build if vulnerabilities are found, among others.
+1. Set additional scan options, if needed. Some examples: waiting for the scan to finish before moving on to the next step, and failing the build if vulnerabilities are found.
 1. When all steps are properly configured, click on **Save**
 
 ![Probely step](/images/freestyle_1.png)
