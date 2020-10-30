@@ -23,7 +23,7 @@ public enum FindingSeverity {
 
     public static FindingSeverity fromString(String text) {
         for (FindingSeverity fs : FindingSeverity.values()) {
-            if (fs.value.equals(text)) {
+            if (fs.value.equalsIgnoreCase(text)) {
                 return fs;
             }
         }
