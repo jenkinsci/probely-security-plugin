@@ -116,8 +116,13 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
         Scan scan = controller.waitForChanges(60);
         // Have vulnerabilities been found in the meanwhile?
         if (rules.isVulnerable(scan)) {
-            if (stopIfFailed) {
-                controller.stop();
+            if (stopIfFailed && scan.isRunning()) {
+                log("Build failed. Stopping scan id: " + scan.id + "...", listener);
+                try {
+                    controller.stop();
+                } catch (IOException ioe) {
+                    log("Could not cancel scan id: " + scan.id + ": " + ioe, listener);
+                }
             }
             String msg = "Target is vulnerable: " + scan;
             log(msg, listener);
@@ -167,7 +172,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
                                                      @QueryParameter final String credentialsId) {
             StandardListBoxModel result = new StandardListBoxModel();
             if (item == null) {
-                if (!Jenkins.getInstance().hasPermission(Jenkins.ADMINISTER)) {
+                if (!Jenkins.get().hasPermission(Jenkins.ADMINISTER)) {
                     return result;
                 }
             } else {
@@ -185,7 +190,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
         public FormValidation doCheckCredentialsId(@AncestorInPath Item item,
                                                    @QueryParameter final String credentialsId) {
             if (item == null) {
-                if (!Jenkins.getInstance().hasPermission(Jenkins.ADMINISTER)) {
+                if (!Jenkins.get().hasPermission(Jenkins.ADMINISTER)) {
                     return FormValidation.ok();
                 }
             } else {

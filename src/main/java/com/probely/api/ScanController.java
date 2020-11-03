@@ -43,8 +43,16 @@ public class ScanController {
         return ScanDeserializer.deserialize(response);
     }
 
-    public Scan stop() {
-        return null;
+    public Scan stop() throws IOException {
+        if (scan == null) {
+            throw new RuntimeException("Scan is not available.");
+        }
+        String url = String.format("%s/%s/scans/%s/cancel/", baseUrl, target, scan.id);
+        HttpPost request = new HttpPost(url);
+        ApiUtils.addRequiredHeaders(authToken, request);
+        String response = ApiUtils.post(httpClient, request);
+        scan = ScanDeserializer.deserialize(response);
+        return scan;
     }
 
     public Scan waitForChanges(long timeout) {
@@ -60,7 +68,9 @@ public class ScanController {
             Scan current = null;
             try {
                 current = refresh();
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+                // Ignored
+            }
             if (current != null && !current.status.equals(scan.status)) {
                 scan = current;
                 break;

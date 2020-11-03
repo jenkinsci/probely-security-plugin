@@ -12,13 +12,12 @@ public class ScanRules {
 
     public boolean isVulnerable(Scan scan) {
         int count = 0;
-        switch (severityThreshold) {
-            case LOW:
-                count += scan.lows;
-            case MEDIUM:
-                count += scan.mediums;
-            case HIGH:
-                count += scan.highs;
+        if (severityThreshold == FindingSeverity.LOW) {
+            count = scan.lows + scan.mediums + scan.highs;
+        } else if (severityThreshold == FindingSeverity.MEDIUM) {
+            count = scan.mediums + scan.highs;
+        } else if (severityThreshold == FindingSeverity.HIGH) {
+            count = scan.highs;
         }
         return count > 0;
     }
