@@ -1,4 +1,4 @@
-<!-- <?jelly escape-by-default='true'?> -->
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
     <j:set var="editorId" value="${descriptor.createEditorId()}"/>
     <f:entry title="${%Target ID}" field="targetId">
