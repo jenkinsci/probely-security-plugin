@@ -20,55 +20,54 @@
          ${%Stop scanning if the build fails}
      </f:entry>
     <script>
-        /*<![CDATA[*/
-        (function () {
-            let count = 0;
-            const limit = 10;
-            function getParentElmByTag(node, tag) {
-                if (!node) {
-                    return null;
-                }
-                let nodeTag = node.nodeName.toLowerCase();
-                if (nodeTag === tag) {
-                    return node;
-                }
-                while(nodeTag !== tag) {
-                    node = node.parentNode;
-                    nodeTag = node.nodeName.toLowerCase();
-                }
-                return node;
+/*<![CDATA[*/
+(function () {
+    let count = 0;
+    const limit = 10;
+    function getParentElmByTag(node, selector1, selector2) {
+        if (!node) {
+            return null;
+        }
+        const nodeSelector1 = node.closest(selector1);
+        const nodeSelector2 = node.closest(selector2);
+        if (nodeSelector1) {
+            return nodeSelector1;
+        } else if (nodeSelector2) {
+            return nodeSelector2;
+        }
+        return null;
+    }
+    function runCode() {
+        const waitForScan = document.querySelector('div[descriptorid="com.probely.plugin.ProbelyScanBuilder"] input[name="_.waitForScan"]');
+        const failThreshold = document.querySelector('div[descriptorid="com.probely.plugin.ProbelyScanBuilder"] select[name="_.failThreshold"]');
+        const stopIfFailed = document.querySelector('div[descriptorid="com.probely.plugin.ProbelyScanBuilder"] input[name="_.stopIfFailed"]');
+        const failThresholdContainer = getParentElmByTag(failThreshold, 'tr', 'div.tr');
+        const stopIfFailedContainer = getParentElmByTag(stopIfFailed, 'tr', 'div.tr');
+        function onChangeHandler() {
+            if (!waitForScan.checked) {
+                stopIfFailedContainer.style.visibility = 'hidden';
+                failThresholdContainer.style.visibility = 'hidden';
+            } else {
+                stopIfFailedContainer.style.visibility = 'visible';
+                failThresholdContainer.style.visibility = 'visible';
             }
-            function runCode() {
-                const waitForScan = document.querySelector('div[descriptorid="com.probely.plugin.ProbelyScanBuilder"] input[name="_.waitForScan"]');
-                const failThreshold = document.querySelector('div[descriptorid="com.probely.plugin.ProbelyScanBuilder"] select[name="_.failThreshold"]');
-                const stopIfFailed = document.querySelector('div[descriptorid="com.probely.plugin.ProbelyScanBuilder"] input[name="_.stopIfFailed"]');
-                const failThresholdContainer = getParentElmByTag(failThreshold, 'tr');
-                const stopIfFailedContainer = getParentElmByTag(stopIfFailed, 'tr');
-                function onChangeHandler() {
-                    if (!waitForScan.checked) {
-                        stopIfFailedContainer.style.visibility = 'hidden';
-                        failThresholdContainer.style.visibility = 'hidden';
-                    } else {
-                        stopIfFailedContainer.style.visibility = 'visible';
-                        failThresholdContainer.style.visibility = 'visible';
-                    }
-                }
-                if (waitForScan !== null && failThresholdContainer !== null && stopIfFailedContainer !== null) {
-                    onChangeHandler();
-                    waitForScan.addEventListener('change', () => {
-                        onChangeHandler();
-                    });
-                    return;
-                }
-                if (count < limit) {
-                    setTimeout(function() {
-                        runCode();
-                    }, 500);
-                }
-                count++;
-            }
-            runCode();
-        })();
-       /*]]>*/
+        }
+        if (waitForScan !== null && failThresholdContainer !== null && stopIfFailedContainer !== null) {
+            onChangeHandler();
+            waitForScan.addEventListener('change', () => {
+                onChangeHandler();
+            });
+            return;
+        }
+        if (count < limit) {
+            setTimeout(function() {
+                runCode();
+            }, 500);
+        }
+        count++;
+    }
+    runCode();
+})();
+/*]]>*/
      </script>
 </j:jelly>
