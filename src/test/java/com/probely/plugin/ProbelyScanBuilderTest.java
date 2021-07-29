@@ -21,7 +21,7 @@ public class ProbelyScanBuilderTest {
     @Test
     public void testBuildEmptyCredentials() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        ProbelyScanBuilder builder = new ProbelyScanBuilder(targetId, authToken);
+        ProbelyScanBuilder builder = new ProbelyScanBuilder(targetId);
 
         project.getBuildersList().add(builder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();

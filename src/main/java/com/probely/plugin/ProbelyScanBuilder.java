@@ -39,16 +39,16 @@ import java.io.IOException;
 public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
 
     private final String targetId;
-    private final String credentialsId;
+    private String credentialsId;
+    private String authToken;
     private boolean waitForScan;
     private boolean stopIfFailed;
     private FindingSeverity failThreshold;
 
     @DataBoundConstructor
     // Constructor parameters are bound to field names in "config.jelly"
-    public ProbelyScanBuilder(String targetId, String credentialsId) {
+    public ProbelyScanBuilder(String targetId) {
         this.targetId = targetId;
-        this.credentialsId = credentialsId;
         this.waitForScan = true;
         this.stopIfFailed = true;
         this.failThreshold = FindingSeverity.MEDIUM;
@@ -60,6 +60,16 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
 
     public String getCredentialsId() {
         return credentialsId;
+    }
+
+    @DataBoundSetter
+    public void setCredentialsId(String credentialsId) {
+        this.credentialsId = credentialsId;
+    }
+
+    @DataBoundSetter
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 
     public boolean getWaitForScan() {
@@ -92,14 +102,17 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener)
             throws IOException {
-        Credentials credentials = CredentialsUtils.getStringCredentials(credentialsId, run);
-        String authToken = CredentialsUtils.getSecret(credentials);
-        if (authToken == null) {
+        String token = authToken;
+        if (StringUtils.isBlank(token) && credentialsId != null) {
+            Credentials credentials = CredentialsUtils.getStringCredentials(credentialsId, run);
+            token = CredentialsUtils.getSecret(credentials);
+        }
+        if (StringUtils.isBlank(token)) {
             throw new AuthenticationException(Settings.ERR_CREDS_NOT_FOUND);
         }
         log("Requesting scan for target: " + targetId, listener);
         CloseableHttpClient httpClient = ApiUtils.buildHttpClient();
-        ScanController sc = new ScanController(authToken, Settings.API_TARGET_URL, targetId, httpClient);
+        ScanController sc = new ScanController(token, Settings.API_TARGET_URL, targetId, httpClient);
         Scan scan = sc.start();
         log("Requested scan: " + scan, listener);
 
@@ -200,8 +213,8 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
                 }
             }
             Credentials credentials = CredentialsUtils.getStringCredentials(credentialsId, item);
-            String authToken = CredentialsUtils.getSecret(credentials);
-            if (StringUtils.isBlank(credentialsId) || authToken == null) {
+            String token = CredentialsUtils.getSecret(credentials);
+            if (StringUtils.isBlank(credentialsId) || token == null) {
                 return FormValidation.error(Settings.ERR_CREDS_INVALID);
             }
 
@@ -209,7 +222,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
             CloseableHttpClient httpClient = ApiUtils.buildHttpClient(timeout);
             String error = null;
             try {
-                UserController uc = new UserController(authToken, Settings.API_PROFILE_URL, httpClient);
+                UserController uc = new UserController(token, Settings.API_PROFILE_URL, httpClient);
                 if (uc.get() == null) {
                     error = Settings.ERR_CREDS_INVALID;
                 }
