@@ -150,6 +150,10 @@ pipeline {
 }
 ```
 
+> Note: if you already have a mechanism in place to securely store credentials
+> (such as HashiCorp's Vault), the plugin can receive the API Key value directly,
+> through the the `authToken` parameter.
+
 4. Configure Jenkins to use the Jenkins file on your repository
 
 ![Pipeline using Jenkinsfile](/images/pipeline_1.png)
