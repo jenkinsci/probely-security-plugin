@@ -12,7 +12,7 @@
     <version>1.2.2-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
-        <jenkins.version>2.235.1</jenkins.version>
+        <jenkins.version>2.249.3</jenkins.version>
         <java.level>8</java.level>
     </properties>
     <name>Probely Security Scanner Plugin</name>

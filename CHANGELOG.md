@@ -1,3 +1,6 @@
+## 1.2.2
+  * Update plugin dependencies
+
 ## 1.2.1
   * Update plugin dependencies
   * Allow specifying an API key directly
