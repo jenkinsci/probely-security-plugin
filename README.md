@@ -169,7 +169,7 @@ A minimal example on how to build and run the plugin on Ubuntu Linux follows. It
 
 ```bash
 
-sudo apt install openjdk-8-jdk maven
+sudo apt install openjdk-11-jdk-headless maven
 git clone https://github.com/jenkinsci/probely-security-plugin.git
 cd probely-security-plugin
 mvn clean verify
