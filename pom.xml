@@ -12,8 +12,9 @@
     <version>1.2.4-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
-        <jenkins.version>2.462.3</jenkins.version>
-        <java.level>17</java.level>
+        <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+        <jenkins.baseline>2.462</jenkins.baseline>
+        <jenkins.version>${jenkins.baseline}.3</jenkins.version>
     </properties>
     <name>Probely Security Scanner Plugin</name>
     <description>Starts web application security scans using Probely.</description>
@@ -23,21 +24,29 @@
             <url>https://opensource.org/licenses/MIT</url>
         </license>
     </licenses>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.jenkins.tools.bom</groupId>
+                <artifactId>bom-${jenkins.baseline}.x</artifactId>
+                <version>4023.va_eeb_b_4e45f07</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
-            <version>338.v848422169819</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>plain-credentials</artifactId>
-            <version>183.va_de8f1dd5a_2b_</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>credentials</artifactId>
-            <version>1381.v2c3a_12074da_b_</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
