@@ -7,19 +7,22 @@ import com.probely.api.UserController;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
-public class ProbelyScanBuilderTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+class ProbelyScanBuilderTest {
 
   private static final String targetId = System.getenv("PROBELY_TARGET_ID");
   private static final String authToken = System.getenv("PROBELY_API_TOKEN");
 
-  @Rule public JenkinsRule jenkins = new JenkinsRule();
-
   @Test
-  public void testBuildEmptyCredentials() throws Exception {
+  @WithJenkins
+  void testBuildEmptyCredentials(JenkinsRule jenkins) throws Exception {
     FreeStyleProject project = jenkins.createFreeStyleProject();
     ProbelyScanBuilder builder = new ProbelyScanBuilder(targetId);
 
@@ -29,18 +32,15 @@ public class ProbelyScanBuilderTest {
   }
 
   @Test
-  public void testInvalidCredentials() throws Exception {
+  void testInvalidCredentials() {
     Client api = new Client(Settings.API_PROFILE_URL, "invalid_token");
     UserController userController = new UserController(api);
-    try {
-      userController.get();
-    } catch (AuthenticationException e) {
-      assert e.getMessage().equals("Unauthorized");
-    }
+    AuthenticationException e = assertThrows(AuthenticationException.class, userController::get);
+    assertEquals("Unauthorized", e.getMessage());
   }
 
   @Test
-  public void testScanController() throws Exception {
+  void testScanController() throws Exception {
     Client api = new Client(Settings.API_TARGET_URL, authToken);
     ScanController scanController = new ScanController(api, targetId);
     scanController.start();
@@ -51,21 +51,21 @@ public class ProbelyScanBuilderTest {
   }
 
   @Test
-  public void testUserController() throws Exception {
+  void testUserController() throws Exception {
     Client api = new Client(Settings.API_PROFILE_URL, authToken);
     UserController userController = new UserController(api);
     userController.get();
   }
 
   @Test
-  public void testClient() throws Exception {
+  void testClient() {
     Client api = new Client(Settings.API_URL, authToken);
     CloseableHttpClient client = api.getHttpClient();
-    assert client != null;
+    assertNotNull(client);
   }
 
   @Test
-  public void testClientClose() throws Exception {
+  void testClientClose() {
     Client api = new Client(Settings.API_URL, authToken);
     api.close();
   }
