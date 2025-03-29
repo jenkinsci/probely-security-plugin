@@ -29,7 +29,7 @@
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
                 <artifactId>bom-${jenkins.baseline}.x</artifactId>
-                <version>4023.va_eeb_b_4e45f07</version>
+                <version>4228.v0a_71308d905b_</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -64,14 +64,6 @@
             <version>2.27.0</version> <!-- Align with Jenkins dependency -->
         </dependency>
     </dependencies>
-
-    <developers>
-      <developer>
-        <id>poupas</id>
-        <name>Joao Poupino</name>
-        <email>joao@probely.com</email>
-      </developer>
-    </developers>
 
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
     <scm>
