@@ -1,5 +1,7 @@
 package com.probely.plugin;
 
+import static org.junit.Assume.assumeNotNull;
+
 import com.probely.api.AuthenticationException;
 import com.probely.api.Client;
 import com.probely.api.ScanController;
@@ -41,6 +43,7 @@ public class ProbelyScanBuilderTest {
 
   @Test
   public void testScanController() throws Exception {
+    assumeNotNull(authToken, targetId);
     Client api = new Client(Settings.API_TARGET_URL, authToken);
     ScanController scanController = new ScanController(api, targetId);
     scanController.start();
@@ -52,6 +55,7 @@ public class ProbelyScanBuilderTest {
 
   @Test
   public void testUserController() throws Exception {
+    assumeNotNull(authToken);
     Client api = new Client(Settings.API_PROFILE_URL, authToken);
     UserController userController = new UserController(api);
     userController.get();

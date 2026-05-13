@@ -15,6 +15,7 @@
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.baseline>2.541</jenkins.baseline>
         <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+        <hpi.bundledArtifacts>error_prone_annotations,gson,httpclient5,httpcore5,httpcore5-h2,slf4j-api</hpi.bundledArtifacts>
     </properties>
     <name>Probely Security Scanner Plugin</name>
     <description>Starts web application security scans using Probely.</description>
