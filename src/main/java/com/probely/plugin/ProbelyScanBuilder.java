@@ -19,7 +19,7 @@ import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import java.io.IOException;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang3.StringUtils;
@@ -168,7 +168,7 @@ public class ProbelyScanBuilder extends Builder implements SimpleBuildStep {
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public String getDisplayName() {
       return Settings.PLUGIN_DISPLAY_NAME;
     }
