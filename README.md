@@ -163,15 +163,17 @@ pipeline {
 
 # Building and Contributing
 
-Contributions are very welcome. To build the plugin, be sure to install the Java Development Kit (JDK) 1.8 and Maven.
+Contributions are very welcome. To build the plugin, be sure to install JDK 21 or newer and Maven 3.9.6 or newer.
 
 A minimal example on how to build and run the plugin on Ubuntu Linux follows. It will also build on macOS and Windows, provided you have the required packages installed. After running the commands below, you will have a test Jenkins instance running with the plugin.
 
 ```bash
 
-sudo apt install openjdk-11-jdk-headless maven
+sudo apt install openjdk-21-jdk-headless maven
 git clone https://github.com/jenkinsci/probely-security-plugin.git
 cd probely-security-plugin
 mvn clean verify
 mvn hpi:run
 ```
+
+If your distribution's Maven is older than 3.9.6, install a newer one from https://maven.apache.org/download.cgi.
